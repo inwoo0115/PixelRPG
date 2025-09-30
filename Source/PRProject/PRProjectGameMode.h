@@ -14,6 +14,3 @@ class APRProjectGameMode : public AGameModeBase
 public:
 	APRProjectGameMode();
 };
-
-
-
