@@ -11,6 +11,7 @@ public class PRProject : ModuleRules
         // 프로젝트 경로 추가
         PublicIncludePaths.Add("PRProject");
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "PaperZD", "GameplayAbilities", "GameplayTags", "GameplayTasks"});
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", 
+			"EnhancedInput", "PaperZD", "GameplayAbilities", "GameplayTags", "GameplayTasks", "UMG"});
 	}
 }

@@ -17,11 +17,15 @@ class PRPROJECT_API UPRAnimInstance : public UPaperZDAnimInstance
 public:
 	virtual void Tick(float DeltaTime) override;
 
-public:
+	void SetAnimationData(class UPRAnimationDataAsset* NewData);
 
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character")
 	FVector Velocity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character")
 	FVector LastVelocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimationData")
+	TObjectPtr<class UPRAnimationDataAsset> AnimData = nullptr;
 };

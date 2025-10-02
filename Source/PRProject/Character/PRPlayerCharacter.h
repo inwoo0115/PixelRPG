@@ -5,22 +5,29 @@
 #include "CoreMinimal.h"
 #include "Character/PRCharacterBase.h"
 #include "InputAction.h"
+#include "Interface/PRInteractComponentInterface.h"
 #include "PRPlayerCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PRPROJECT_API APRPlayerCharacter : public APRCharacterBase
+class PRPROJECT_API APRPlayerCharacter : public APRCharacterBase, public IPRInteractComponentInterface
 {
 	GENERATED_BODY()
 	
 public:
 	APRPlayerCharacter();
 
+	// Input Action Functions
 	void Move(const FInputActionValue& Value);
 
+	void Interact(const FInputActionValue& Value);
+
+	// Input setting
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual class UPRInteractionComponent* GetInteractionComponent() override;
 
 protected:
 	// Input
@@ -29,5 +36,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> MoveAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> InteractAction;
+
+	// Components
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
+	TObjectPtr<class UPRInteractionComponent> InteractionComponent;
 
 };

@@ -9,7 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-
+#include "Animation/PRAnimInstance.h"
 
 APRCharacterBase::APRCharacterBase()
 {
@@ -59,9 +59,26 @@ void APRCharacterBase::PossessedBy(AController* NewController)
 void APRCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// 애니메이션 data asset 적용
+	if (AnimData)
+	{
+		SetAnimData(AnimData);
+	}
 }
+
+void APRCharacterBase::SetAnimData(TObjectPtr<class UPRAnimationDataAsset> NewAnimData)
+{
+	UPRAnimInstance* AnimInst = Cast<UPRAnimInstance>(GetAnimInstance());
+	if (AnimInst)
+	{
+		AnimInst->SetAnimationData(NewAnimData);
+	}
+}
+
 
 UAbilitySystemComponent* APRCharacterBase::GetAbilitySystemComponent() const
 {
 	return ASC;
 }
+

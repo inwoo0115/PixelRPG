@@ -25,6 +25,8 @@ public:
 
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	void SetAnimData(TObjectPtr<class UPRAnimationDataAsset> NewAnimData);
+
 protected:
 	// GAS
 	UPROPERTY(EditAnywhere, Category = "GAS")
@@ -42,4 +44,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USpringArmComponent> SpringArm;
+
+	// Animation
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnimationData")
+	TObjectPtr<class UPRAnimationDataAsset> AnimData;
 };

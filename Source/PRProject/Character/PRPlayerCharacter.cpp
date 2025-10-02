@@ -8,10 +8,13 @@
 #include "PaperZDAnimInstance.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Character/Components/PRInteractionComponent.h"
 #include "InputAction.h"
 
 APRPlayerCharacter::APRPlayerCharacter()
 {
+	// Interaction
+	InteractionComponent = CreateDefaultSubobject<UPRInteractionComponent>(TEXT("Interact"));
 }
 
 void APRPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -32,8 +35,14 @@ void APRPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 			UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APRPlayerCharacter::Move);
+			EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APRPlayerCharacter::Interact);
 		}
 	}
+}
+
+UPRInteractionComponent* APRPlayerCharacter::GetInteractionComponent()
+{
+	return InteractionComponent;
 }
 
 void APRPlayerCharacter::Move(const FInputActionValue& Value)
@@ -49,4 +58,12 @@ void APRPlayerCharacter::Move(const FInputActionValue& Value)
 
 	AddMovementInput(ForwardVector, Movement.X);
 	AddMovementInput(RightVector, Movement.Y);
+}
+
+void APRPlayerCharacter::Interact(const FInputActionValue& Value)
+{
+	if (InteractionComponent)
+	{
+		InteractionComponent->Interact();
+	}
 }

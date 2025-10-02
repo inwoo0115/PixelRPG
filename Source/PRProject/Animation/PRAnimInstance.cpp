@@ -3,6 +3,7 @@
 
 #include "Animation/PRAnimInstance.h"
 #include "Character/PRPlayerCharacter.h"
+#include "Animation/PRAnimationDataAsset.h"
 
 void UPRAnimInstance::Tick(float DeltaTime)
 {
@@ -21,4 +22,9 @@ void UPRAnimInstance::Tick(float DeltaTime)
 			}
 		}
 	}
+}
+
+void UPRAnimInstance::SetAnimationData(UPRAnimationDataAsset* NewData)
+{
+	AnimData = NewData;
 }
