@@ -29,6 +29,11 @@ public:
 
 	virtual class UPRInteractionComponent* GetInteractionComponent() override;
 
+	// Input
+	void PressInputAction(EInputType InInputType);
+
+	void ReleaseInputAction(EInputType InInputType);
+
 protected:
 	// Input
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -39,6 +44,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> InteractAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> AttackAction;
 
 	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")

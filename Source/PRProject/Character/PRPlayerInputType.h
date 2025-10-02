@@ -7,7 +7,6 @@ UENUM(BlueprintType)
 enum class EInputType : uint8
 {
 	None = 0,
-	BasicAttack,
-	SpecialAttack,
+	Attack,
 	Dash
 };

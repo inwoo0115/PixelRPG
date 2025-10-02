@@ -36,6 +36,7 @@ void APRPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APRPlayerCharacter::Move);
 			EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APRPlayerCharacter::Interact);
+			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APRPlayerCharacter::PressInputAction, EInputType::Attack);
 		}
 	}
 }
@@ -43,6 +44,38 @@ void APRPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 UPRInteractionComponent* APRPlayerCharacter::GetInteractionComponent()
 {
 	return InteractionComponent;
+}
+
+void APRPlayerCharacter::PressInputAction(EInputType InInputType)
+{
+	int32 InputId = static_cast<int32>(InInputType);
+	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(InputId);
+	if (Spec)
+	{
+		Spec->InputPressed = true;
+		if (Spec->IsActive())
+		{
+			ASC->AbilitySpecInputPressed(*Spec);
+		}
+		else
+		{
+			ASC->TryActivateAbility(Spec->Handle);
+		}
+	}
+}
+
+void APRPlayerCharacter::ReleaseInputAction(EInputType InInputType)
+{
+	int32 InputId = static_cast<int32>(InInputType);
+	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(InputId);
+	if (Spec)
+	{
+		Spec->InputPressed = false;
+		if (Spec->IsActive())
+		{
+			ASC->AbilitySpecInputReleased(*Spec);
+		}
+	}
 }
 
 void APRPlayerCharacter::Move(const FInputActionValue& Value)
