@@ -1,16 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Interaction/PRInteractionActorBase.h"
+#include "NPC/PRNonPlayerCharacterBase.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
-#include "GameFramework/Character.h"
 #include "Interface/PRInteractComponentInterface.h"
 #include "Character/Components/PRInteractionComponent.h"
 
-APRInteractionActorBase::APRInteractionActorBase()
+APRNonPlayerCharacterBase::APRNonPlayerCharacterBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	// 박스 컴포넌트 설정
 	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
@@ -25,49 +24,61 @@ APRInteractionActorBase::APRInteractionActorBase()
 	InteractionWidget->SetupAttachment(RootComponent);
 	InteractionWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	InteractionWidget->SetDrawSize(FVector2D(200, 50));
-	InteractionWidget->SetVisibility(false); // 처음에는 숨김
+	InteractionWidget->SetVisibility(false);
 }
 
-void APRInteractionActorBase::Interact(AActor* InteractActor)
+void APRNonPlayerCharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void APRNonPlayerCharacterBase::Interact(AActor* InteractActor)
 {
 	if (bCanInteract)
 	{
-		// interact logic
+		// 여기에 로직 구현
 	}
 }
 
-void APRInteractionActorBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void APRNonPlayerCharacterBase::CollisionEvent(AActor* InteractActor)
 {
+	// 충돌 시 이벤트 구현
+}
+
+void APRNonPlayerCharacterBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// 충돌 시 이벤트가 있을 경우 우선 호출
+	if (bHasCollisionEvent && bCanCollisionEvent)
+	{
+		CollisionEvent(OtherActor);
+		bCanCollisionEvent = false;
+		return;
+	}
+
 	if (OtherActor && OtherActor->Implements<UPRInteractComponentInterface>())
 	{
 		bCanInteract = true;
-		InteractionWidget->SetVisibility(true);
-
+		if (InteractionWidget)
+		{
+			InteractionWidget->SetVisibility(true);
+		}
 		IPRInteractComponentInterface* ICI = Cast<IPRInteractComponentInterface>(OtherActor);
 		ICI->GetInteractionComponent()->AddCandidate(this);
 	}
 }
 
-void APRInteractionActorBase::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void APRNonPlayerCharacterBase::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor && OtherActor->Implements<UPRInteractComponentInterface>())
 	{
 		bCanInteract = false;
-		InteractionWidget->SetVisibility(false);
-
+		if (InteractionWidget)
+		{
+			InteractionWidget->SetVisibility(false);
+		}
 		IPRInteractComponentInterface* ICI = Cast<IPRInteractComponentInterface>(OtherActor);
 		ICI->GetInteractionComponent()->RemoveCandidate(this);
 	}
-}
 
-
-void APRInteractionActorBase::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	if (InteractionBox)
-	{
-		InteractionBox->OnComponentBeginOverlap.AddDynamic(this, &APRInteractionActorBase::OnBoxBeginOverlap);
-		InteractionBox->OnComponentEndOverlap.AddDynamic(this, &APRInteractionActorBase::OnBoxEndOverlap);
-	}
+	bCanCollisionEvent = true;
 }
