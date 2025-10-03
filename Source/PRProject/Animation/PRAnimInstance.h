@@ -19,6 +19,8 @@ public:
 
 	void SetAnimationData(class UPRAnimationDataAsset* NewData);
 
+	FVector GetLastVelocity() const;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character")
 	FVector Velocity;

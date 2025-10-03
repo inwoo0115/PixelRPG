@@ -28,3 +28,8 @@ void UPRAnimInstance::SetAnimationData(UPRAnimationDataAsset* NewData)
 {
 	AnimData = NewData;
 }
+
+FVector UPRAnimInstance::GetLastVelocity() const
+{
+	return LastVelocity;
+}

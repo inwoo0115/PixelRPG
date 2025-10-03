@@ -21,7 +21,24 @@ public:
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+
 protected:
+	UFUNCTION()
+	void OnAttackMontageComplete();
+
+	UFUNCTION()
+	void OnAttackMontageInterrupted();
+
 	UPROPERTY(Transient, DuplicateTransient)
 	TObjectPtr<class APRCharacterBase> CachedCharacter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<class UPaperZDAnimSequence> AttackAnim;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Rate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float StartPosition;
 };
