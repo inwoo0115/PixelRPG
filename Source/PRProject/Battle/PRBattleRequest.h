@@ -3,12 +3,12 @@
 #include "CoreMinimal.h"
 #include "PRBattleRequest.generated.h"
 
+// 어빌리티 송신 구조체
 USTRUCT(BlueprintType)
 struct FBattleRequest
 {
     GENERATED_BODY()
 
-public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite) 
     FName BattleLevelName;
 

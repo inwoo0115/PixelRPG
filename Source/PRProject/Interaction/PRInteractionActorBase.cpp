@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Interface/PRInteractComponentInterface.h"
 #include "Character/Components/PRInteractionComponent.h"
+#include "PRBattleInteractionActor.h"
 
 APRInteractionActorBase::APRInteractionActorBase()
 {
@@ -30,9 +31,9 @@ APRInteractionActorBase::APRInteractionActorBase()
 
 void APRInteractionActorBase::Interact(AActor* InteractActor)
 {
-	if (bCanInteract)
+	if (!bCanInteract)
 	{
-		// interact logic
+		return;
 	}
 }
 

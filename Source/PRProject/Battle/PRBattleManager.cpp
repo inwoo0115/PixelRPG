@@ -8,7 +8,6 @@
 
 APRBattleManager* APRBattleManager::Singleton = nullptr;
 
-
 APRBattleManager::APRBattleManager()
 {
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
@@ -35,7 +34,10 @@ void APRBattleManager::BeginPlay()
 
 APRBattleManager* APRBattleManager::Get(UWorld* World)
 {
-	if (Singleton) return Singleton;
+	if (Singleton)
+	{
+		return Singleton;
+	}
 
 	return Cast<APRBattleManager>(UGameplayStatics::GetActorOfClass(World, APRBattleManager::StaticClass()));
 }

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/DataTable.h"
-#include "PRBattleDataTable.generated.h"
+#include "Abilities/GameplayAbility.h"
+#include "PRGA_CreateRandomBattle.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PRPROJECT_API UPRBattleDataTable : public UDataTable
+class PRPROJECT_API UPRGA_CreateRandomBattle : public UGameplayAbility
 {
 	GENERATED_BODY()
 	

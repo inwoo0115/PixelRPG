@@ -58,6 +58,4 @@ protected:
 
 private:
 	void OnAnimEnd(bool bCompleted);
-
-
 };
