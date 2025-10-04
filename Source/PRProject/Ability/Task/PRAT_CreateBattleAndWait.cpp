@@ -99,5 +99,5 @@ void UPRAT_CreateBattleAndWait::OnLevelLoaded()
 
 void UPRAT_CreateBattleAndWait::OnLevelUnLoaded()
 {
-	// 레벨 제거 후 처리
+	// 레벨 제거 이 후 처리
 }

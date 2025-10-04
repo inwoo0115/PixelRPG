@@ -4,20 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "Battle/PRBattleRequest.h"
-#include "GameplayTagContainer.h"
-#include "PRGA_CreateAssignBattle.generated.h"
+#include "PRGA_EndBattle.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PRPROJECT_API UPRGA_CreateAssignBattle : public UGameplayAbility
+class PRPROJECT_API UPRGA_EndBattle : public UGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
-	UPRGA_CreateAssignBattle();
+	UPRGA_EndBattle();
 
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 
@@ -25,10 +23,4 @@ public:
 
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-protected:
-	UFUNCTION()
-	void OnBattleComplete();
-
-	UFUNCTION()
-	void OnBattleInterrupted();
 };

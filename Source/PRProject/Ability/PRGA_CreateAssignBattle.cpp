@@ -4,6 +4,7 @@
 #include "Ability/PRGA_CreateAssignBattle.h"
 #include "Tag/PRGameplayTag.h"
 #include "Task/PRAT_CreateBattleAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
 #include "Data/PRBattleDataAsset.h"
 
 UPRGA_CreateAssignBattle::UPRGA_CreateAssignBattle()
