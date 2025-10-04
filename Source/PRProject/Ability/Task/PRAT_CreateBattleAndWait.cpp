@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/LevelStreamingDynamic.h"
 #include "Engine/StreamableManager.h"
+#include "Engine/LevelStreamingDynamic.h"
 
 UPRAT_CreateBattleAndWait* UPRAT_CreateBattleAndWait::CreateBattleLevelProxy(
 	UGameplayAbility* OwningAbility,
@@ -70,6 +71,12 @@ void UPRAT_CreateBattleAndWait::OnDestroy(bool bInOwnerFinished)
 	{
 		StreamRef->SetShouldBeVisible(false);
 		StreamRef->SetShouldBeLoaded(false);
+
+		ULevelStreaming* Field = UGameplayStatics::GetStreamingLevel(GetWorld(), FName(TEXT("/Game/PRProject/Level/TestLevel")));
+		if (Field)
+		{
+			Field->SetShouldBeVisible(true);
+		}
 	}
 
 	if (!bInOwnerFinished && ShouldBroadcastAbilityTaskDelegates())
@@ -85,8 +92,11 @@ void UPRAT_CreateBattleAndWait::OnDestroy(bool bInOwnerFinished)
 void UPRAT_CreateBattleAndWait::OnLevelLoaded()
 {
 	// 레벨 생성 후 호출 함수
-
-
+	ULevelStreaming* Field = UGameplayStatics::GetStreamingLevel(GetWorld(), FName(TEXT("/Game/PRProject/Level/TestLevel")));
+	if (Field)
+	{
+		Field->SetShouldBeVisible(false);
+	}
 	// 몬스터 생성 및 플레이어 위치 이동
 
 

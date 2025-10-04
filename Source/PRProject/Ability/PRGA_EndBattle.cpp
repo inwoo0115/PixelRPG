@@ -19,7 +19,7 @@ void UPRGA_EndBattle::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	// 전투 결과 데이터 후 처리
-	UE_LOG(LogTemp, Warning, TEXT("ASD"))
+
 	// 필요 시 Task 추가
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
