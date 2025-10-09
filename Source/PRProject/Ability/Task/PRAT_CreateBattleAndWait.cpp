@@ -7,18 +7,21 @@
 #include "Engine/LevelStreamingDynamic.h"
 #include "Engine/StreamableManager.h"
 #include "Engine/LevelStreamingDynamic.h"
+#include "Data/PRBattleDataAsset.h"
+#include "PaperZDCharacter.h"
 
 UPRAT_CreateBattleAndWait* UPRAT_CreateBattleAndWait::CreateBattleLevelProxy(
 	UGameplayAbility* OwningAbility,
 	FName TaskInstanceName,
-	FName BattleLevelName,
+	const UPRBattleDataAsset* Data,
 	const AActor* PlayerActor
 )
 {
 	UPRAT_CreateBattleAndWait* Task = NewAbilityTask<UPRAT_CreateBattleAndWait>(OwningAbility, TaskInstanceName);
 
-	Task->BattleLevelName = BattleLevelName;
+	Task->BattleLevelName = Data->BattleLevelName;
 	Task->PlayerActor = PlayerActor;
+	Task->BattleData = Data;
 
 	return Task;
 }
@@ -48,20 +51,22 @@ void UPRAT_CreateBattleAndWait::Activate()
 		GetWorld(),
 		BattleLevelName.ToString(),
 		SavedLocation,
-		FRotator::ZeroRotator,
+		SavedRotation,
 		bSuccess
 	);
 
-	if (bSuccess)
-	{
-		Stream->SetShouldBeLoaded(true);
-		Stream->SetShouldBeVisible(true);
+	StreamRef = Stream;
 
-		Stream->OnLevelLoaded.AddDynamic(this, &UPRAT_CreateBattleAndWait::OnLevelLoaded);
-		Stream->OnLevelUnloaded.AddDynamic(this, &UPRAT_CreateBattleAndWait::OnLevelUnLoaded);
+	if (!bSuccess)
+	{
+		return;
 	}
 
-	StreamRef = Stream;
+	Stream->SetShouldBeLoaded(true);
+	Stream->SetShouldBeVisible(true);
+
+	Stream->OnLevelLoaded.AddDynamic(this, &UPRAT_CreateBattleAndWait::OnLevelLoaded);
+	Stream->OnLevelUnloaded.AddDynamic(this, &UPRAT_CreateBattleAndWait::OnLevelUnLoaded);
 }
 
 void UPRAT_CreateBattleAndWait::OnDestroy(bool bInOwnerFinished)
@@ -97,8 +102,22 @@ void UPRAT_CreateBattleAndWait::OnLevelLoaded()
 	{
 		Field->SetShouldBeVisible(false);
 	}
-	// 몬스터 생성 및 플레이어 위치 이동
 
+	// Enemy 스폰
+	FActorSpawnParameters Params;
+	Params.OverrideLevel = StreamRef->GetLoadedLevel();
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	for (const FEnemyInfo& Info : BattleData->EnemyInfo)
+	{
+		if (!Info.EnemyClass) continue;
+
+		APaperZDCharacter* Enemy = StreamRef->GetWorld()->SpawnActor<APaperZDCharacter>(
+			Info.EnemyClass,
+			Info.SpawnLocation,
+			Info.SpawnRotation,
+			Params);
+	}
 
 	// 레벨 호출 후 외부 로직 바인딩
 	if (ShouldBroadcastAbilityTaskDelegates())

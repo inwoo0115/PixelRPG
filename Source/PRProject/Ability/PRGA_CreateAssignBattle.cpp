@@ -33,7 +33,7 @@ void UPRGA_CreateAssignBattle::ActivateAbility(const FGameplayAbilitySpecHandle 
 	UPRAT_CreateBattleAndWait* CreateBattleTask = UPRAT_CreateBattleAndWait::CreateBattleLevelProxy(
 		this,
 		FName(TEXT("CreateBattleTask")),
-		Data->BattleLevelName,
+		Data,
 		TriggerEventData->Instigator
 	);
 

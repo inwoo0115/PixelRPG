@@ -31,7 +31,7 @@ public:
 	static UPRAT_CreateBattleAndWait* CreateBattleLevelProxy(
 		UGameplayAbility* OwningAbility,
 		FName TaskInstanceName,
-		FName BattleLevelName,
+		const class UPRBattleDataAsset* Data,
 		const AActor* Player
 	);
 
@@ -39,6 +39,9 @@ protected:
 
 	virtual void Activate() override;
 	virtual void OnDestroy(bool bInOwnerFinished) override;
+
+	UPROPERTY()
+	TObjectPtr<const UPRBattleDataAsset> BattleData;
 
 	// TODO: 임시로 레벨 이름만 넣음
 	FName BattleLevelName;
