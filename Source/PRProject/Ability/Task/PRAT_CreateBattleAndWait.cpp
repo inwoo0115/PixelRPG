@@ -47,7 +47,7 @@ void UPRAT_CreateBattleAndWait::Activate()
 	ULevelStreamingDynamic* Stream = ULevelStreamingDynamic::LoadLevelInstance(
 		GetWorld(),
 		BattleLevelName.ToString(),
-		FVector::ZeroVector,
+		SavedLocation,
 		FRotator::ZeroRotator,
 		bSuccess
 	);

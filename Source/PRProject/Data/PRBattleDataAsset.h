@@ -6,6 +6,26 @@
 #include "Engine/DataAsset.h"
 #include "PRBattleDataAsset.generated.h"
 
+USTRUCT(BlueprintType)
+struct FEnemyInfo
+{
+	GENERATED_BODY()
+
+	// 스폰할 객체 정보
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class APaperZDCharacter> EnemyClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector SpawnLocation = FVector::ZeroVector;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator SpawnRotation = FRotator::ZeroRotator;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Level;
+};
+
+
 /**
  * 
  */
@@ -17,4 +37,10 @@ class PRPROJECT_API UPRBattleDataAsset : public UDataAsset
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName BattleLevelName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 EnemyNumber;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FEnemyInfo> EnemyInfo;
 };
