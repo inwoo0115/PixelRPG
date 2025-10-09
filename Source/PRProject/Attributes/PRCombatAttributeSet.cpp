@@ -7,8 +7,8 @@ UPRCombatAttributeSet::UPRCombatAttributeSet() :
 	Health(100.0f),
 	MaxHealth(100.0f),
 	Damage(10.0f),
-	Speed(10.0f),
 	MaxDamage(100.0f),
+	Speed(10.0f),
 	MaxSpeed(100.0f)
 {
 }

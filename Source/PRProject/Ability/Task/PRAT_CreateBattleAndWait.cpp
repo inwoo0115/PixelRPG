@@ -84,6 +84,20 @@ void UPRAT_CreateBattleAndWait::OnDestroy(bool bInOwnerFinished)
 		}
 	}
 
+	// 카메라 복귀
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+	APawn* Pawn = PC ? PC->GetPawn() : nullptr;
+	if (PC && Pawn)
+	{
+		PC->SetViewTargetWithBlend(
+			Pawn,
+			1.0f,
+			EViewTargetBlendFunction::VTBlend_EaseInOut,
+			0.2f,
+			true
+		);
+	}
+
 	if (!bInOwnerFinished && ShouldBroadcastAbilityTaskDelegates())
 		OnInterrupted.Broadcast();
 
@@ -117,6 +131,35 @@ void UPRAT_CreateBattleAndWait::OnLevelLoaded()
 			Info.SpawnLocation,
 			Info.SpawnRotation,
 			Params);
+	}
+
+	// 카메라 전환
+	AActor* TargetCam = nullptr;
+	if (ULevel* LV = StreamRef ? StreamRef->GetLoadedLevel() : nullptr)
+	{
+		for (AActor* A : LV->Actors)
+		{
+			if (IsValid(A) && A->ActorHasTag(FName("Camera")))
+			{
+				TargetCam = A;
+				break;
+			}
+		}
+	}
+
+	if (TargetCam)
+	{
+		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+		if (PC)
+		{
+			PC->SetViewTargetWithBlend(
+				TargetCam,
+				2.0f,
+				EViewTargetBlendFunction::VTBlend_Cubic,
+				0.0f,
+				true
+			);
+		}
 	}
 
 	// 레벨 호출 후 외부 로직 바인딩

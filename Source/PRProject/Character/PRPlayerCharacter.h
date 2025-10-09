@@ -51,5 +51,4 @@ protected:
 	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
 	TObjectPtr<class UPRInteractionComponent> InteractionComponent;
-
 };
