@@ -194,6 +194,11 @@ void APRBattleLevelManager::OnExecuteCommand()
     StartPhase(EBattlePhase::EndTurn);
 }
 
+void APRBattleLevelManager::SetBattleResult(EBattleResult NewResult)
+{
+    Result = NewResult;
+}
+
 void APRBattleLevelManager::PhaseExecute()
 {
     UE_LOG(LogTemp, Warning, TEXT("Phase Execute"));

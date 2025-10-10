@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "GameplayTagContainer.h"
 #include "PRBattleCommandWidget.generated.h"
 
 /**
@@ -22,4 +23,11 @@ protected:
 
 	UPROPERTY() 
 	TWeakObjectPtr<AActor> FollowActor;
+
+	// GAS Tag
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tag")
+	FGameplayTag CastSkillTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tag")
+	FGameplayTag RunAwayTag;
 };

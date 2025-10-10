@@ -73,6 +73,11 @@ public:
 	void InitBattle();
 
 	static APRBattleLevelManager* Get(UWorld* World);
+
+	void OnExecuteCommand();
+
+	void SetBattleResult(EBattleResult NewResult);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -91,8 +96,6 @@ protected:
 	void PhaseStartTurn();
 
 	void PhaseAwaitCommand();
-
-	void OnExecuteCommand();
 
 	void PhaseExecute();
 	

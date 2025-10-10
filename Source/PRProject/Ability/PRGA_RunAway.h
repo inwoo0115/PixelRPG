@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "PRGA_CastSkill.generated.h"
+#include "PRGA_RunAway.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PRPROJECT_API UPRGA_CastSkill : public UGameplayAbility
+class PRPROJECT_API UPRGA_RunAway : public UGameplayAbility
 {
 	GENERATED_BODY()
 	
 public:
-	UPRGA_CastSkill();
+	UPRGA_RunAway();
 
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 
@@ -23,8 +23,4 @@ public:
 
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-
-protected:
-	UFUNCTION()
-	void OnSkillComplete();
 };
