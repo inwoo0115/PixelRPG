@@ -12,7 +12,8 @@
 				"Paper2D",
 				"PaperZD",
 				"GameplayAbilities",
-				"Engine"
+				"Engine",
+				"UMG"
 			]
 		}
 	],

@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "PRGA_CreateAssignBattle.generated.h"
+#include "PRGA_StartTurn.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PRPROJECT_API UPRGA_CreateAssignBattle : public UGameplayAbility
+class PRPROJECT_API UPRGA_StartTurn : public UGameplayAbility
 {
 	GENERATED_BODY()
-
+	
 public:
-	UPRGA_CreateAssignBattle();
+	UPRGA_StartTurn();
 
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 
@@ -23,10 +23,14 @@ public:
 
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-protected:
-	UFUNCTION()
-	void OnBattleComplete();
+	void ShowUI(const FGameplayAbilityActorInfo* ActorInfo);
 
-	UFUNCTION()
-	void OnBattleInterrupted();
+	void HideUI(const FGameplayAbilityActorInfo* ActorInfo);
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<class UUserWidget> CommandWidgetClass;
+
+	UPROPERTY(Transient)
+	TObjectPtr<class UUserWidget> CommandWidget;
 };

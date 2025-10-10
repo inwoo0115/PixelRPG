@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayTagContainer.h"
 #include "PRBattleLevelManager.generated.h"
 
 UENUM()
@@ -101,6 +102,9 @@ protected:
 
 	bool CheckBattleResult();
 
+	// Phase Tag
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tag")
+	FGameplayTag StartTurnTag;
 
 	// Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

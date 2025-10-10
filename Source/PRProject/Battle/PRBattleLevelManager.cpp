@@ -6,6 +6,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Interface/PRBattleInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Character/PRCharacterBase.h"
 
 APRBattleLevelManager* APRBattleLevelManager::Singleton = nullptr;
@@ -174,7 +175,14 @@ void APRBattleLevelManager::PhaseStartTurn()
 void APRBattleLevelManager::PhaseAwaitCommand()
 {
     UE_LOG(LogTemp, Warning, TEXT("Await Command"));
-    // 명령 UI 호출 및 어빌리티 실행
+
+    // Start turn 어빌리티 실행
+    FGameplayEventData Data;
+    Data.EventTag = StartTurnTag;
+    Data.Instigator = this;
+    Data.Target = Participants[CurrentIndex].Actor.Get();
+
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Participants[CurrentIndex].Actor.Get(), StartTurnTag, Data);
 
     // 카메라 현재 턴 플레이어 고정
 }
