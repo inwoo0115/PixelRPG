@@ -6,6 +6,27 @@
 #include "GameFramework/Actor.h"
 #include "PRBattleLevelManager.generated.h"
 
+UENUM()
+enum class EBattlePhase : uint8
+{
+	None, 
+	Intro, 
+	StartTurn, 
+	AwaitCommand, 
+	Execute, 
+	EndTurn, 
+	EndBattle
+};
+
+UENUM()
+enum class EBattleResult : uint8
+{
+	None,
+	Victory,
+	Defeat,
+	Runaway
+};
+
 USTRUCT()
 struct FParticipantState
 {
@@ -20,6 +41,9 @@ public:
 
 	UPROPERTY()
 	bool  bAlive = true;
+
+	UPROPERTY()
+	bool  bIsAlly = false;
 
 	UPROPERTY()
 	int32 TieRoll = 0;
@@ -45,16 +69,38 @@ class PRPROJECT_API APRBattleLevelManager : public AActor
 public:	
 	APRBattleLevelManager();
 
-	virtual void Tick(float DeltaTime) override;
+	void InitBattle();
 
+	static APRBattleLevelManager* Get(UWorld* World);
 protected:
 	virtual void BeginPlay() override;
 
-	void InitBattle();
+	virtual void Tick(float DeltaSeconds) override;
 
+	// Init Battle System
 	void GatherAliveParticipant();
 
 	void BuildTurnOrder();
+
+	// Phase Fucntion
+	void StartPhase(EBattlePhase NewPhase);
+
+	void PhaseIntro();
+
+	void PhaseStartTurn();
+
+	void PhaseAwaitCommand();
+
+	void OnExecuteCommand();
+
+	void PhaseExecute();
+	
+	void PhaseEndTurn();
+	
+	void PhaseEndBattle();
+
+	bool CheckBattleResult();
+
 
 	// Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -63,9 +109,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USpringArmComponent> SpringArm;
 
-	// Turn Battle Parameter
+	// Battle Parameter
 	int32 CurrentIndex = 0;
 
 	UPROPERTY()
 	TArray<FParticipantState> Participants;
+
+	// Battle Phase
+	EBattlePhase CurrentPhase = EBattlePhase::None;
+
+	EBattleResult Result = EBattleResult::None;
+
+	// SingleTon
+	static APRBattleLevelManager* Singleton;
 };

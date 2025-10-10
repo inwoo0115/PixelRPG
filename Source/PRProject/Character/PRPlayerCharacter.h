@@ -6,13 +6,14 @@
 #include "Character/PRCharacterBase.h"
 #include "InputAction.h"
 #include "Interface/PRInteractComponentInterface.h"
+#include "Interface/PRBattleInterface.h"
 #include "PRPlayerCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PRPROJECT_API APRPlayerCharacter : public APRCharacterBase, public IPRInteractComponentInterface
+class PRPROJECT_API APRPlayerCharacter : public APRCharacterBase, public IPRInteractComponentInterface, public IPRBattleInterface
 {
 	GENERATED_BODY()
 	
@@ -33,6 +34,10 @@ public:
 	void PressInputAction(EInputType InInputType);
 
 	void ReleaseInputAction(EInputType InInputType);
+
+	// Battle Interface
+	virtual float GetSpeed() override;
+	virtual bool  IsAlive() override;
 
 protected:
 	// Input

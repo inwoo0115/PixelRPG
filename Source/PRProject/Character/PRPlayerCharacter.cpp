@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "Character/Components/PRInteractionComponent.h"
 #include "InputAction.h"
+#include "Attributes/PRCombatAttributeSet.h"
 
 APRPlayerCharacter::APRPlayerCharacter()
 {
@@ -76,6 +77,28 @@ void APRPlayerCharacter::ReleaseInputAction(EInputType InInputType)
 			ASC->AbilitySpecInputReleased(*Spec);
 		}
 	}
+}
+
+float APRPlayerCharacter::GetSpeed()
+{
+	if (ASC->GetSet<UPRCombatAttributeSet>())
+	{
+		return ASC->GetSet<UPRCombatAttributeSet>()->GetSpeed();
+	}
+	return 0.0f;
+}
+
+bool APRPlayerCharacter::IsAlive()
+{
+	if (ASC->GetSet<UPRCombatAttributeSet>())
+	{
+		if (ASC->GetSet<UPRCombatAttributeSet>()->GetHealth() <= 0.0f)
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void APRPlayerCharacter::Move(const FInputActionValue& Value)

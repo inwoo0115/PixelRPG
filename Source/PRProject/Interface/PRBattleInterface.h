@@ -22,12 +22,7 @@ class PRPROJECT_API IPRBattleInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) 
-	float GetSpeed();
+	virtual float GetSpeed() = 0;
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) 
-	bool  IsAlive();
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void StartTurn();
+	virtual bool  IsAlive() = 0;
 };

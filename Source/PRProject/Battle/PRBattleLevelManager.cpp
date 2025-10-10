@@ -6,6 +6,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Interface/PRBattleInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Character/PRCharacterBase.h"
+
+APRBattleLevelManager* APRBattleLevelManager::Singleton = nullptr;
 
 APRBattleLevelManager::APRBattleLevelManager()
 {
@@ -20,17 +23,40 @@ APRBattleLevelManager::APRBattleLevelManager()
 
 }
 
+APRBattleLevelManager* APRBattleLevelManager::Get(UWorld* World)
+{
+    if (Singleton)
+    {
+        return Singleton;
+    }
+
+    return Cast<APRBattleLevelManager>(UGameplayStatics::GetActorOfClass(World, APRBattleLevelManager::StaticClass()));
+}
+
 void APRBattleLevelManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	//InitBattle();
+
+    Singleton = this;
+}
+
+void APRBattleLevelManager::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+
 }
 
 void APRBattleLevelManager::InitBattle()
 {
 	GatherAliveParticipant();
 	BuildTurnOrder();
+
+    if (!Participants.Num())
+    {
+        return;
+    }
+
+    StartPhase(EBattlePhase::Intro);
 }
 
 void APRBattleLevelManager::GatherAliveParticipant()
@@ -47,11 +73,21 @@ void APRBattleLevelManager::GatherAliveParticipant()
     {
         if (!IsValid(A)) continue;
 
+        IPRBattleInterface* BI = Cast<IPRBattleInterface>(A);
+
         FParticipantState S;
         S.Actor = A;
-        S.Speed = IPRBattleInterface::Execute_GetSpeed(A);
-        S.bAlive = IPRBattleInterface::Execute_IsAlive(A);
+        S.Speed = BI->GetSpeed();
+        S.bAlive = BI->IsAlive();
 		S.StableId = Index;
+        S.bIsAlly = false;
+
+        // 캐릭터 일 경우 동료 표시
+        APRCharacterBase* PRCharacter = Cast<APRCharacterBase>(A);
+        if (PRCharacter)
+        {
+            S.bIsAlly = true;
+        }
 
 		Index++;
         Participants.Add(S);
@@ -60,8 +96,6 @@ void APRBattleLevelManager::GatherAliveParticipant()
 
 void APRBattleLevelManager::BuildTurnOrder()
 {
-	Participants.RemoveAll([](const FParticipantState& S) { return !S.Actor.IsValid() || !S.bAlive; });
-
 	for (FParticipantState& S : Participants)
 	{
 		S.TieRoll = FMath::Rand();
@@ -70,9 +104,160 @@ void APRBattleLevelManager::BuildTurnOrder()
 	Participants.Sort(FParticipantState::SortPredicate);
 }
 
-void APRBattleLevelManager::Tick(float DeltaTime)
+void APRBattleLevelManager::StartPhase(EBattlePhase NewPhase)
 {
-	Super::Tick(DeltaTime);
+    CurrentPhase = NewPhase;
 
+    switch (CurrentPhase)
+    {
+    case EBattlePhase::Intro:
+        PhaseIntro();
+        break;
+
+    case EBattlePhase::StartTurn:
+        PhaseStartTurn();
+        break;
+
+    case EBattlePhase::AwaitCommand:
+        PhaseAwaitCommand();
+        break;
+
+    case EBattlePhase::Execute:
+        PhaseExecute();
+        break;
+
+    case EBattlePhase::EndTurn:
+        PhaseEndTurn();
+        break;
+
+    case EBattlePhase::EndBattle:
+        PhaseEndBattle();
+
+    default:
+        break;
+    }
+}
+
+void APRBattleLevelManager::PhaseIntro()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Intro"));
+    // 배틀 컷씬 재생
+    
+    // 턴 시작으로 이동
+    StartPhase(EBattlePhase::StartTurn);
+}
+
+void APRBattleLevelManager::PhaseStartTurn()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Start Trun"));
+    if (!Participants[CurrentIndex].bAlive)
+    {
+        StartPhase(EBattlePhase::EndTurn);
+    }
+
+    // 턴 시작 컷씬
+
+   
+
+    // 플레이어 일 경우 명령대기
+    if (Participants[CurrentIndex].bIsAlly)
+    {
+        StartPhase(EBattlePhase::AwaitCommand);
+    }
+    // AI 일 경우 실행
+    else
+    {
+        StartPhase(EBattlePhase::Execute);
+    }
+}
+
+void APRBattleLevelManager::PhaseAwaitCommand()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Await Command"));
+    // 명령 UI 호출 및 어빌리티 실행
+
+    // 카메라 현재 턴 플레이어 고정
+}
+
+void APRBattleLevelManager::OnExecuteCommand()
+{
+    UE_LOG(LogTemp, Warning, TEXT("On Execute"));
+    // 델리게이트로 커맨드 실행 후 처리
+    StartPhase(EBattlePhase::EndTurn);
+}
+
+void APRBattleLevelManager::PhaseExecute()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Phase Execute"));
+    // 어빌리티 실행
+
+    // 실행 후 전투 결과 처리
+    StartPhase(EBattlePhase::EndTurn);
+}
+
+void APRBattleLevelManager::PhaseEndTurn()
+{
+    UE_LOG(LogTemp, Warning, TEXT("End Turn"));
+    // 배틀 결과 검사
+    bool BattleResult = CheckBattleResult();
+
+    // 배틀 지속 일 경우 다음 캐릭터 턴 시작으로 이동
+    if (!BattleResult)
+    {
+        if (Participants.Num() <= CurrentIndex)
+        {
+            BuildTurnOrder();
+            CurrentIndex = 0;
+        }
+        else
+        {
+            CurrentIndex++;
+        }
+        StartPhase(EBattlePhase::StartTurn);
+    }
+    // 결과가 나왔을 경우 배틀 종료 (도망치기, 승리, 패배)
+    else
+    {
+        StartPhase(EBattlePhase::EndBattle);
+    }
+}
+
+void APRBattleLevelManager::PhaseEndBattle()
+{
+    UE_LOG(LogTemp, Warning, TEXT("End Battle"));
+    // 결과 처리
+
+    // 결과 컷씬 재생
+    
+    // Battle Manager에 전투 결과 전송
+
+    // End battle 어빌리티 호출
+}
+
+bool APRBattleLevelManager::CheckBattleResult()
+{
+    if (Result != EBattleResult::None)
+    {
+        return true;
+    }
+
+    bool bAnyAllyAlive = false;
+    bool bAnyEnemyAlive = false;
+
+    for (const FParticipantState& S : Participants)
+    {
+        if (!S.Actor.IsValid() || !S.bAlive)
+            continue;
+
+        if (S.bIsAlly)
+            bAnyAllyAlive = true;
+        else
+            bAnyEnemyAlive = true;
+
+        if (bAnyAllyAlive && bAnyEnemyAlive)
+            return false;
+    }
+
+    return (!bAnyAllyAlive || !bAnyEnemyAlive);
 }
 

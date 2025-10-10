@@ -43,7 +43,6 @@ protected:
 	UPROPERTY()
 	TObjectPtr<const UPRBattleDataAsset> BattleData;
 
-	// TODO: 임시로 레벨 이름만 넣음
 	FName BattleLevelName;
 
 	TWeakObjectPtr<const AActor> PlayerActor;

@@ -68,7 +68,7 @@ void APRInteractionActorBase::BeginPlay()
 	
 	if (InteractionBox)
 	{
-		InteractionBox->OnComponentBeginOverlap.AddDynamic(this, &APRInteractionActorBase::OnBoxBeginOverlap);
-		InteractionBox->OnComponentEndOverlap.AddDynamic(this, &APRInteractionActorBase::OnBoxEndOverlap);
+		InteractionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &APRInteractionActorBase::OnBoxBeginOverlap);
+		InteractionBox->OnComponentEndOverlap.AddUniqueDynamic(this, &APRInteractionActorBase::OnBoxEndOverlap);
 	}
 }

@@ -9,6 +9,7 @@
 #include "Engine/LevelStreamingDynamic.h"
 #include "Data/PRBattleDataAsset.h"
 #include "PaperZDCharacter.h"
+#include "Battle/PRBattleLevelManager.h"
 
 UPRAT_CreateBattleAndWait* UPRAT_CreateBattleAndWait::CreateBattleLevelProxy(
 	UGameplayAbility* OwningAbility,
@@ -134,32 +135,47 @@ void UPRAT_CreateBattleAndWait::OnLevelLoaded()
 	}
 
 	// 카메라 전환
-	AActor* TargetCam = nullptr;
+	AActor* Manager = nullptr;
 	if (ULevel* LV = StreamRef ? StreamRef->GetLoadedLevel() : nullptr)
 	{
 		for (AActor* A : LV->Actors)
 		{
 			if (IsValid(A) && A->ActorHasTag(FName("Camera")))
 			{
-				TargetCam = A;
+				Manager = A;
 				break;
 			}
 		}
 	}
 
-	if (TargetCam)
+	if (Manager)
 	{
 		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 		if (PC)
 		{
 			PC->SetViewTargetWithBlend(
-				TargetCam,
+				Manager,
 				2.0f,
 				EViewTargetBlendFunction::VTBlend_Cubic,
 				0.0f,
 				true
 			);
 		}
+		
+		// 배틀 시작
+		APRBattleLevelManager* BattleManager = Cast<APRBattleLevelManager>(Manager);
+		if (BattleManager)
+		{
+			FTimerHandle InitHandle;
+			GetWorld()->GetTimerManager().SetTimer(
+				InitHandle,
+				BattleManager,                              
+				&APRBattleLevelManager::InitBattle,          
+				2.0f,                                     
+				false                        
+			);
+		}
+		
 	}
 
 	// 레벨 호출 후 외부 로직 바인딩
