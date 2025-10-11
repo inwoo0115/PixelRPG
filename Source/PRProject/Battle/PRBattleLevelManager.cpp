@@ -199,6 +199,21 @@ void APRBattleLevelManager::SetBattleResult(EBattleResult NewResult)
     Result = NewResult;
 }
 
+TArray<TWeakObjectPtr<AActor>> APRBattleLevelManager::GetAliveEnemies() const
+{
+    TArray<TWeakObjectPtr<AActor>> EnemyResult;
+    EnemyResult.Reserve(Participants.Num());
+
+    for (const FParticipantState& P : Participants)
+    {
+        if (P.bAlive && !P.bIsAlly && P.Actor.IsValid())
+        {
+            EnemyResult.Add(P.Actor);
+        }
+    }
+    return EnemyResult;
+}
+
 void APRBattleLevelManager::PhaseExecute()
 {
     UE_LOG(LogTemp, Warning, TEXT("Phase Execute"));

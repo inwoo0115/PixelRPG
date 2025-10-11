@@ -40,9 +40,15 @@ void APRCharacterBase::PossessedBy(AController* NewController)
 		ASC->InitAbilityActorInfo(PS, this);
 
 		// Ability µî·Ï
-		for (const auto& StartAbility : StartAbilties)
+		for (const auto& StartAbility : StartAbilities)
 		{
 			FGameplayAbilitySpec StartSpec(StartAbility);
+			ASC->GiveAbility(StartSpec);
+		}
+
+		for (const auto& SkillAbility : SkillAbilities)
+		{
+			FGameplayAbilitySpec StartSpec(SkillAbility);
 			ASC->GiveAbility(StartSpec);
 		}
 
@@ -74,6 +80,11 @@ void APRCharacterBase::SetAnimData(TObjectPtr<class UPRAnimationDataAsset> NewAn
 	{
 		AnimInst->SetAnimationData(NewAnimData);
 	}
+}
+
+const TArray<TSubclassOf<class UGameplayAbility>> APRCharacterBase::GetSkillAbilities()
+{
+	return SkillAbilities;
 }
 
 

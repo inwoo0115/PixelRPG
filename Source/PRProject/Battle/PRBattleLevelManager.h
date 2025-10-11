@@ -78,6 +78,8 @@ public:
 
 	void SetBattleResult(EBattleResult NewResult);
 
+	TArray<TWeakObjectPtr<AActor>> GetAliveEnemies() const;
+
 protected:
 	virtual void BeginPlay() override;
 

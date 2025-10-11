@@ -24,6 +24,8 @@ void UPRGA_StartTurn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	// UI Ç¥½Ã
+	UE_LOG(LogTemp, Warning, TEXT("Start Turn Ability"));
+
 	ShowUI(ActorInfo);
 }
 
