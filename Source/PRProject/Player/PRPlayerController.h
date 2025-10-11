@@ -16,4 +16,10 @@ class PRPROJECT_API APRPlayerController : public APlayerController
 	
 public:
 	virtual void BeginPlay() override;
+
+    UFUNCTION()
+    void StartBattleUIMode();
+
+    UFUNCTION()
+    void EndBattleUIMode();
 };

@@ -3,6 +3,8 @@
 
 #include "Ability/PRGA_EndBattle.h"
 #include "PRGA_EndBattle.h"
+#include "Player/PRPlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
 UPRGA_EndBattle::UPRGA_EndBattle()
 {
@@ -21,6 +23,13 @@ void UPRGA_EndBattle::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 	// 전투 결과 데이터 후 처리
 
 	// 필요 시 Task 추가
+
+	// 입력 모드 전환
+	if (APRPlayerController* PC = Cast<APRPlayerController>(UGameplayStatics::GetPlayerController(this, 0)))
+	{
+		PC->StartBattleUIMode();
+	}
+
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }

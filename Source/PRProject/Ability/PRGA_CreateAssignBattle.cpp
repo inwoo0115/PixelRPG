@@ -6,6 +6,8 @@
 #include "Task/PRAT_CreateBattleAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
 #include "Data/PRBattleDataAsset.h"
+#include "Kismet/GameplayStatics.h"
+#include "Player/PRPlayerController.h"
 
 UPRGA_CreateAssignBattle::UPRGA_CreateAssignBattle()
 {
@@ -36,6 +38,12 @@ void UPRGA_CreateAssignBattle::ActivateAbility(const FGameplayAbilitySpecHandle 
 		Data,
 		TriggerEventData->Instigator
 	);
+
+	// 입력 모드 전환
+	if (APRPlayerController* PC = Cast<APRPlayerController>(UGameplayStatics::GetPlayerController(this, 0)))
+	{
+		PC->StartBattleUIMode();
+	}
 
 	CreateBattleTask->OnCompleted.AddDynamic(this, &UPRGA_CreateAssignBattle::OnBattleComplete);
 	CreateBattleTask->OnInterrupted.AddDynamic(this, &UPRGA_CreateAssignBattle::OnBattleInterrupted);
