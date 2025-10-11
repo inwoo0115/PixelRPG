@@ -29,6 +29,8 @@ public:
 
 	const TMap<EInputType, TSubclassOf<class UGameplayAbility>> GetSkillAbilities();
 
+	void SetLastVelocityByVector(FVector InVelocity);
+
 protected:
 	// GAS
 	UPROPERTY(EditAnywhere, Category = "GAS")

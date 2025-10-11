@@ -2,6 +2,7 @@
 
 
 #include "Battle/PRBattleLevelManager.h"
+#include "Battle/PRBattleManager.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Interface/PRBattleInterface.h"
@@ -158,8 +159,6 @@ void APRBattleLevelManager::PhaseStartTurn()
 
     // 턴 시작 컷씬
 
-   
-
     // 플레이어 일 경우 명령대기
     if (Participants[CurrentIndex].bIsAlly)
     {
@@ -214,19 +213,6 @@ TArray<TWeakObjectPtr<AActor>> APRBattleLevelManager::GetAliveEnemies() const
         }
     }
 
-#if !(UE_BUILD_SHIPPING)
-    UE_LOG(LogTemp, Warning, TEXT("[BLM] GetAliveEnemies: Return.Num=%d"), EnemyResult.Num());
-    for (int32 i = 0; i < EnemyResult.Num(); ++i)
-    {
-        const AActor* A = EnemyResult[i].Get();
-        UE_LOG(LogTemp, Warning, TEXT("  Return[%d]: Name=%s Class=%s Loc=%s"),
-            i,
-            *GetNameSafe(A),
-            A ? *A->GetClass()->GetName() : TEXT("?"),
-            A ? *A->GetActorLocation().ToCompactString() : TEXT("N/A"));
-    }
-#endif
-
     return EnemyResult;
 }
 
@@ -248,14 +234,11 @@ void APRBattleLevelManager::PhaseEndTurn()
     // 배틀 지속 일 경우 다음 캐릭터 턴 시작으로 이동
     if (!BattleResult)
     {
+        CurrentIndex++;
         if (Participants.Num() <= CurrentIndex)
         {
             BuildTurnOrder();
             CurrentIndex = 0;
-        }
-        else
-        {
-            CurrentIndex++;
         }
         StartPhase(EBattlePhase::StartTurn);
     }
@@ -276,6 +259,10 @@ void APRBattleLevelManager::PhaseEndBattle()
     // Battle Manager에 전투 결과 전송
 
     // End battle 어빌리티 호출
+    FGameplayEventData Data;
+    Data.EventTag = EndBattleTag;
+
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(APRBattleManager::Get(GetWorld()), EndBattleTag, Data);
 }
 
 bool APRBattleLevelManager::CheckBattleResult()

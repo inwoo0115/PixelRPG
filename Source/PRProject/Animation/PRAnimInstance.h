@@ -21,6 +21,8 @@ public:
 
 	FVector GetLastVelocity() const;
 
+	void SetLastVelocity(FVector InVelocity);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character")
 	FVector Velocity;

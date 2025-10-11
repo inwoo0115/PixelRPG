@@ -10,6 +10,7 @@
 #include "Data/PRBattleDataAsset.h"
 #include "PaperZDCharacter.h"
 #include "Battle/PRBattleLevelManager.h"
+#include "Character/PRCharacterBase.h"
 
 UPRAT_CreateBattleAndWait* UPRAT_CreateBattleAndWait::CreateBattleLevelProxy(
 	UGameplayAbility* OwningAbility,
@@ -25,6 +26,21 @@ UPRAT_CreateBattleAndWait* UPRAT_CreateBattleAndWait::CreateBattleLevelProxy(
 	Task->BattleData = Data;
 
 	return Task;
+}
+
+void UPRAT_CreateBattleAndWait::SetPlayerOnBattleLevel()
+{
+	if (!PlayerActor.IsValid())
+	{
+		return;
+	}
+
+	AActor* Actor = const_cast<AActor*>(PlayerActor.Get());
+	if (APRCharacterBase* Char = Cast<APRCharacterBase>(Actor))
+	{
+		Char->SetActorLocation(Char->GetActorLocation() + FVector(-400,0 ,0));
+		Char->SetLastVelocityByVector(FVector(1,0,0));
+	}
 }
 
 void UPRAT_CreateBattleAndWait::Activate()
@@ -99,6 +115,13 @@ void UPRAT_CreateBattleAndWait::OnDestroy(bool bInOwnerFinished)
 		);
 	}
 
+	// 플레이어 위치 복귀
+	AActor* Actor = const_cast<AActor*>(PlayerActor.Get());
+	if (APRCharacterBase* Char = Cast<APRCharacterBase>(Actor))
+	{
+		Char->SetActorLocation(SavedLocation);
+	}
+
 	if (!bInOwnerFinished && ShouldBroadcastAbilityTaskDelegates())
 		OnInterrupted.Broadcast();
 
@@ -117,6 +140,9 @@ void UPRAT_CreateBattleAndWait::OnLevelLoaded()
 	{
 		Field->SetShouldBeVisible(false);
 	}
+
+	// 임시로 캐릭터 위치 설정
+	SetPlayerOnBattleLevel();
 
 	// Enemy 스폰
 	FActorSpawnParameters Params;

@@ -111,6 +111,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tag")
 	FGameplayTag StartTurnTag;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tag")
+	FGameplayTag EndBattleTag;
+
 	// Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCameraComponent> Camera;

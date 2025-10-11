@@ -88,6 +88,15 @@ const TMap<EInputType, TSubclassOf<class UGameplayAbility>> APRCharacterBase::Ge
 	return SkillAbilities;
 }
 
+void APRCharacterBase::SetLastVelocityByVector(FVector InVelocity)
+{
+	UPRAnimInstance* AnimInst = Cast<UPRAnimInstance>(GetAnimInstance());
+	if (AnimInst)
+	{
+		AnimInst->SetLastVelocity(InVelocity);
+	}
+}
+
 
 UAbilitySystemComponent* APRCharacterBase::GetAbilitySystemComponent() const
 {

@@ -27,7 +27,7 @@ void UPRGA_EndBattle::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 	// 입력 모드 전환
 	if (APRPlayerController* PC = Cast<APRPlayerController>(UGameplayStatics::GetPlayerController(this, 0)))
 	{
-		PC->StartBattleUIMode();
+		PC->EndBattleUIMode();
 	}
 
 

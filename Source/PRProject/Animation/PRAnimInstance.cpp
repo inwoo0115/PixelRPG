@@ -33,3 +33,8 @@ FVector UPRAnimInstance::GetLastVelocity() const
 {
 	return LastVelocity;
 }
+
+void UPRAnimInstance::SetLastVelocity(FVector InVelocity)
+{
+	LastVelocity = InVelocity;
+}

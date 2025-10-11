@@ -37,6 +37,9 @@ protected:
 
 	int32 SelectedIndex = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Offset")
+	FVector SlotWidgetOffset;
+
 	UPROPERTY()
 	TArray<TWeakObjectPtr<UPRBattleCommandSlotWidget>> Slots;
 

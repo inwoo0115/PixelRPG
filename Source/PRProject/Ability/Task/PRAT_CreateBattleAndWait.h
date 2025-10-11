@@ -37,6 +37,8 @@ public:
 
 protected:
 
+	void SetPlayerOnBattleLevel();
+
 	virtual void Activate() override;
 	virtual void OnDestroy(bool bInOwnerFinished) override;
 

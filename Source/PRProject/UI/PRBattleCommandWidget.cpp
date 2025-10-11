@@ -23,8 +23,6 @@ void UPRBattleCommandWidget::InitWidgetInfo(AActor* InActor)
 	{
 		InventorySlot->SetFollowActor(FollowActor.Get());
 	}
-
-	// TODO 액터 정보 기반 위젯 정보 설정
 }
 
 void UPRBattleCommandWidget::NativeConstruct()
@@ -55,7 +53,7 @@ void UPRBattleCommandWidget::NativeTick(const FGeometry& MyGeometry, float InDel
 	}
 
 	FVector2D ScreenPos;
-	const bool bProjected = PC->ProjectWorldLocationToScreen(FollowActor->GetActorLocation() + FVector(0, 0, 100.f), ScreenPos, /*bPlayerViewportRelative=*/true);
+	const bool bProjected = PC->ProjectWorldLocationToScreen(FollowActor->GetActorLocation() + SlotWidgetOffset, ScreenPos, /*bPlayerViewportRelative=*/true);
 
 	if (bProjected)
 	{
