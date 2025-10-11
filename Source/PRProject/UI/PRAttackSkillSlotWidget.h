@@ -13,5 +13,15 @@ UCLASS()
 class PRPROJECT_API UPRAttackSkillSlotWidget : public UPRBattleCommandSlotWidget
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	int32 SlotIndex = 0;
+
+	void SetSkillText(FText InText);
+
+protected:
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<class UTextBlock> SkillText;
+
 };

@@ -48,7 +48,8 @@ void APRCharacterBase::PossessedBy(AController* NewController)
 
 		for (const auto& SkillAbility : SkillAbilities)
 		{
-			FGameplayAbilitySpec StartSpec(SkillAbility);
+			FGameplayAbilitySpec StartSpec(SkillAbility.Value);
+			StartSpec.InputID = (int32)(SkillAbility.Key);
 			ASC->GiveAbility(StartSpec);
 		}
 
@@ -82,7 +83,7 @@ void APRCharacterBase::SetAnimData(TObjectPtr<class UPRAnimationDataAsset> NewAn
 	}
 }
 
-const TArray<TSubclassOf<class UGameplayAbility>> APRCharacterBase::GetSkillAbilities()
+const TMap<EInputType, TSubclassOf<class UGameplayAbility>> APRCharacterBase::GetSkillAbilities()
 {
 	return SkillAbilities;
 }

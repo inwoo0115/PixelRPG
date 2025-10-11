@@ -55,7 +55,7 @@ void UPRBattleCommandWidget::NativeTick(const FGeometry& MyGeometry, float InDel
 	}
 
 	FVector2D ScreenPos;
-	const bool bProjected = PC->ProjectWorldLocationToScreen(FollowActor->GetActorLocation(), ScreenPos, /*bPlayerViewportRelative=*/true);
+	const bool bProjected = PC->ProjectWorldLocationToScreen(FollowActor->GetActorLocation() + FVector(0, 0, 100.f), ScreenPos, /*bPlayerViewportRelative=*/true);
 
 	if (bProjected)
 	{

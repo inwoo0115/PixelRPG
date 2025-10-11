@@ -201,6 +201,8 @@ void APRBattleLevelManager::SetBattleResult(EBattleResult NewResult)
 
 TArray<TWeakObjectPtr<AActor>> APRBattleLevelManager::GetAliveEnemies() const
 {
+    UE_LOG(LogTemp, Warning, TEXT("Get Alive Enemies"));
+
     TArray<TWeakObjectPtr<AActor>> EnemyResult;
     EnemyResult.Reserve(Participants.Num());
 
@@ -211,6 +213,20 @@ TArray<TWeakObjectPtr<AActor>> APRBattleLevelManager::GetAliveEnemies() const
             EnemyResult.Add(P.Actor);
         }
     }
+
+#if !(UE_BUILD_SHIPPING)
+    UE_LOG(LogTemp, Warning, TEXT("[BLM] GetAliveEnemies: Return.Num=%d"), EnemyResult.Num());
+    for (int32 i = 0; i < EnemyResult.Num(); ++i)
+    {
+        const AActor* A = EnemyResult[i].Get();
+        UE_LOG(LogTemp, Warning, TEXT("  Return[%d]: Name=%s Class=%s Loc=%s"),
+            i,
+            *GetNameSafe(A),
+            A ? *A->GetClass()->GetName() : TEXT("?"),
+            A ? *A->GetActorLocation().ToCompactString() : TEXT("N/A"));
+    }
+#endif
+
     return EnemyResult;
 }
 

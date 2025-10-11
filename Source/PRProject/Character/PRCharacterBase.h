@@ -27,7 +27,7 @@ public:
 
 	void SetAnimData(TObjectPtr<class UPRAnimationDataAsset> NewAnimData);
 
-	const TArray<TSubclassOf<class UGameplayAbility>> GetSkillAbilities();
+	const TMap<EInputType, TSubclassOf<class UGameplayAbility>> GetSkillAbilities();
 
 protected:
 	// GAS
@@ -35,7 +35,7 @@ protected:
 	TArray<TSubclassOf<class UGameplayAbility>> StartAbilities;
 
 	UPROPERTY(EditAnywhere, Category = "GAS")
-	TArray<TSubclassOf<class UGameplayAbility>> SkillAbilities;
+	TMap<EInputType, TSubclassOf<class UGameplayAbility>> SkillAbilities;
 
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TMap<EInputType, TSubclassOf<class UGameplayAbility>> StartInputAbilties;

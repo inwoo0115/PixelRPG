@@ -2,4 +2,9 @@
 
 
 #include "UI/PRAttackSkillSlotWidget.h"
+#include "Components/TextBlock.h"
 
+void UPRAttackSkillSlotWidget::SetSkillText(FText InText)
+{
+	SkillText->SetText(InText);
+}

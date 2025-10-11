@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
+#include "Ability/SkillAbility/PRGA_SkillAbilityBase.h"
 
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
@@ -13,6 +14,7 @@
 #include "PRAttackSkillSlotWidget.h"
 
 #include "Battle/PRBattleLevelManager.h"
+#include "Data/PRSkillData.h"
 
 void UPRAttackSlotWidget::NativeConstruct()
 {
@@ -55,6 +57,7 @@ FReply UPRAttackSlotWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const F
 void UPRAttackSlotWidget::ActiveCommandAction()
 {
     // 스킬 선택 상태 활성화
+    SetIsFocusable(true);
     SetKeyboardFocus();
 
     BuildSkillListFromASC();
@@ -92,14 +95,16 @@ void UPRAttackSlotWidget::BuildSkillListFromASC()
         return;
     }
 
-    for (const TSubclassOf<UGameplayAbility>& AbilityClass : Char->GetSkillAbilities())
+    int32 SlotIdx = 0;
+
+    for (const auto& AbilityClass : Char->GetSkillAbilities())
     {
-        if (!*AbilityClass)
+        if (!*AbilityClass.Value)
         {
             continue;
         }
 
-        const UGameplayAbility* CDO = AbilityClass->GetDefaultObject<UGameplayAbility>();
+        const UGameplayAbility* CDO = AbilityClass.Value->GetDefaultObject<UGameplayAbility>();
         if (!CDO)
         {
             continue;
@@ -112,11 +117,12 @@ void UPRAttackSlotWidget::BuildSkillListFromASC()
             continue;
         }
 
-        // 표시 이름
-        // SkillSlot->DisplayName = FText::FromName(CDO->GetFName());
+        const UPRGA_SkillAbilityBase* SkillInfo = Cast<UPRGA_SkillAbilityBase>(CDO);
 
-        // 태그 추가
+        SkillSlot->SetSkillText(SkillInfo->GetSkillName());
 
+        SkillSlot->ActionTag = ActionTag;
+        SkillSlot->SlotIndex = (int32)AbilityClass.Key;
 
         // VerticalBox에 추가
         if (UVerticalBoxSlot* BoxSlot = SkillsBox->AddChildToVerticalBox(SkillSlot))
@@ -215,11 +221,6 @@ void UPRAttackSlotWidget::ConfirmCurrent()
         {
             return;
         }
-        if (auto* Entry = SkillSlots[SkillIndex].Get())
-        {
-            // 태그 선택
-            //SelectedSkillEventTag = Entry->SkillEventTag;
-        }
         EnterTargetSelectMode();
     }
     else
@@ -252,5 +253,18 @@ void UPRAttackSlotWidget::CancelOneLevel()
 
 void UPRAttackSlotWidget::SendCastEventToSelfWithTarget()
 {
+    UE_LOG(LogTemp, Warning, TEXT("SendCastEventToSelfWithTarget"));
+
     // 이벤트 캐릭터에 송신
+    UPRAttackSkillSlotWidget* CurrentSlot = Cast<UPRAttackSkillSlotWidget>(SkillSlots[SkillIndex]);
+
+    USkillData* SkillData = NewObject<USkillData>();
+    SkillData->InputType = CurrentSlot->SlotIndex;
+    SkillData->TargetActors.Add(Targets[TargetIndex].Get());
+
+    FGameplayEventData Data;
+    Data.EventTag = ActionTag;
+    Data.OptionalObject = SkillData;
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(FollowActor.Get(), ActionTag, Data);
+
 }

@@ -8,5 +8,9 @@ enum class EInputType : uint8
 {
 	None = 0,
 	Attack,
-	Dash
+	Dash,
+	Slot0,
+	Slot1,
+	Slot2
 };
+
