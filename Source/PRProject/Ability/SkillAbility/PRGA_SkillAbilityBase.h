@@ -18,13 +18,6 @@ class PRPROJECT_API UPRGA_SkillAbilityBase : public UGameplayAbility
 public:
 	UPRGA_SkillAbilityBase();
 
-	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
-
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
-	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
-
-
 	FGameplayTag GetEventTag() const;
 
 	FText GetSkillName() const;
@@ -35,4 +28,19 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tag")
 	FGameplayTag EventTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<class UPaperZDAnimSequence> SkillAnim;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Damage")
+	TSubclassOf<class UGameplayEffect> DamageEffectClass;
+
+	UPROPERTY()
+	TArray<TWeakObjectPtr<AActor>> CurrentTargets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Rate = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float StartPosition = 0.0f;
 };

@@ -26,7 +26,7 @@ APRInteractionActorBase::APRInteractionActorBase()
 	InteractionWidget->SetupAttachment(RootComponent);
 	InteractionWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	InteractionWidget->SetDrawSize(FVector2D(200, 50));
-	InteractionWidget->SetVisibility(false); // Ã³À½¿¡´Â ¼û±è
+	InteractionWidget->SetVisibility(false);
 }
 
 void APRInteractionActorBase::Interact(AActor* InteractActor)

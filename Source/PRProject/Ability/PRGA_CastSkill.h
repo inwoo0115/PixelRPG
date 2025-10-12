@@ -25,6 +25,9 @@ public:
 
 protected:
 	UFUNCTION()
-	void OnSkillComplete();
+	void OnSkillComplete(const FAbilityEndedData& Data);
 
+	FDelegateHandle AbilityEndedHandle;
+
+	FGameplayAbilitySpecHandle RoutedSpecHandle;
 };

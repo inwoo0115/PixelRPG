@@ -55,6 +55,13 @@ void UPRGA_CastSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 		return;
 	}
 
+	RoutedSpecHandle = Spec->Handle;
+
+	if (!AbilityEndedHandle.IsValid())
+	{
+		AbilityEndedHandle = ASC->OnAbilityEnded.AddUObject(this, &UPRGA_CastSkill::OnSkillComplete);
+	}
+
 	// Cast Event Tag로 이벤트 재전송
 	UPRGA_SkillAbilityBase* SkillAbility = Cast<UPRGA_SkillAbilityBase>(Spec->Ability);
 	if (SkillAbility)
@@ -63,8 +70,6 @@ void UPRGA_CastSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 		Fwd.EventTag = SkillAbility->GetEventTag();
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(ActorInfo->AvatarActor.Get(), SkillAbility->GetEventTag(), Fwd);
 	}
-
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, /*bReplicateEnd=*/true, /*bWasCancelled=*/false);
 }
 
 void UPRGA_CastSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -74,8 +79,27 @@ void UPRGA_CastSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 }
 
 
-void UPRGA_CastSkill::OnSkillComplete()
+void UPRGA_CastSkill::OnSkillComplete(const FAbilityEndedData& Data)
 {
+	if (Data.AbilitySpecHandle != RoutedSpecHandle)
+	{
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Skill Completed"));
+
+	// 델리게이트 Unbind
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
+	{
+		if (AbilityEndedHandle.IsValid())
+		{
+			ASC->OnAbilityEnded.Remove(AbilityEndedHandle);
+			AbilityEndedHandle.Reset();
+		}
+	}
+
+	RoutedSpecHandle = FGameplayAbilitySpecHandle();
+
 	APRBattleLevelManager* Manager = APRBattleLevelManager::Get(GetWorld());
 
 	if (Manager)
