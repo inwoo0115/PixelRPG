@@ -37,13 +37,8 @@ void UPRCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 	}
 	else if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
-
-
 		SetHealth(FMath::Clamp(GetHealth() - GetDamage(), MinimumHealth, GetMaxHealth()));
 		SetDamage(0.0f);
-
-		UE_LOG(LogTemp, Warning, TEXT("[POST Damage] HP %.1f -> %.1f (¥Ä=%.1f), Damage=%.1f, Max=%.1f"),
-			OldHealth, GetHealth(), GetHealth() - OldHealth, OldDamage, MaxHP);
 	}
 }
 

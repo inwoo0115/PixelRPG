@@ -80,6 +80,8 @@ public:
 
 	TArray<TWeakObjectPtr<AActor>> GetAliveEnemies() const;
 
+	TArray<TWeakObjectPtr<AActor>> GetAliveAlly() const;
+
 protected:
 	virtual void BeginPlay() override;
 

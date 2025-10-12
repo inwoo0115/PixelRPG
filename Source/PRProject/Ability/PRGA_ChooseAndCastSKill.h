@@ -4,18 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "PRGA_CastSkill.generated.h"
+#include "PRGA_ChooseAndCastSKill.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PRPROJECT_API UPRGA_CastSkill : public UGameplayAbility
+class PRPROJECT_API UPRGA_ChooseAndCastSKill : public UGameplayAbility
 {
 	GENERATED_BODY()
-	
+
+
 public:
-	UPRGA_CastSkill();
+	UPRGA_ChooseAndCastSKill();
 
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 
@@ -30,6 +31,4 @@ protected:
 	FDelegateHandle AbilityEndedHandle;
 
 	FGameplayAbilitySpecHandle RoutedSpecHandle;
-
-	bool bIsSkillCompleted = false;
 };

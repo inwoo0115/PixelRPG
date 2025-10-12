@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "PaperZDCharacter.h"
 #include "Interface/PRInteractableInterface.h"
+#include "GameplayTagContainer.h"
 #include "PRNonPlayerCharacterBase.generated.h"
 
 /**
@@ -50,4 +51,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
 	bool bHasCollisionEvent = false;
+
+protected:
+	// Battle Data
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataAsset")
+	TObjectPtr<class UPRBattleDataAsset> BattleData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tag")
+	FGameplayTag CreateBattleTag;
 };

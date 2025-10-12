@@ -12,6 +12,8 @@
 #include "AbilitySystemComponent.h"
 #include "Attributes/PRCombatAttributeSet.h"
 
+#include "Data/PRSkillData.h"
+
 APRBattleLevelManager* APRBattleLevelManager::Singleton = nullptr;
 
 APRBattleLevelManager::APRBattleLevelManager()
@@ -155,7 +157,7 @@ void APRBattleLevelManager::PhaseIntro()
 
 void APRBattleLevelManager::PhaseStartTurn()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Start Trun"));
+    UE_LOG(LogTemp, Warning, TEXT("Start Trun : %d %s"), CurrentIndex, *Participants[CurrentIndex].Actor.Get()->GetName());
     if (!Participants[CurrentIndex].bAlive)
     {
         StartPhase(EBattlePhase::EndTurn);
@@ -177,7 +179,7 @@ void APRBattleLevelManager::PhaseStartTurn()
 
 void APRBattleLevelManager::PhaseAwaitCommand()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Await Command"));
+    UE_LOG(LogTemp, Warning, TEXT("Player Await for Command"));
 
     // Start turn 어빌리티 실행
     FGameplayEventData Data;
@@ -186,15 +188,12 @@ void APRBattleLevelManager::PhaseAwaitCommand()
     Data.Target = Participants[CurrentIndex].Actor.Get();
 
     UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Participants[CurrentIndex].Actor.Get(), StartTurnTag, Data);
-
-    // 카메라 현재 턴 플레이어 고정
-
 }
 
 void APRBattleLevelManager::OnExecuteCommand()
 {
-    UE_LOG(LogTemp, Warning, TEXT("On Execute"));
-    // 델리게이트로 커맨드 실행 후 처리
+    UE_LOG(LogTemp, Warning, TEXT("Command Finish"));
+    // 커맨드 실행 후 처리
     StartPhase(EBattlePhase::EndTurn);
 }
 
@@ -205,8 +204,6 @@ void APRBattleLevelManager::SetBattleResult(EBattleResult NewResult)
 
 TArray<TWeakObjectPtr<AActor>> APRBattleLevelManager::GetAliveEnemies() const
 {
-    UE_LOG(LogTemp, Warning, TEXT("Get Alive Enemies"));
-
     TArray<TWeakObjectPtr<AActor>> EnemyResult;
     EnemyResult.Reserve(Participants.Num());
 
@@ -221,13 +218,39 @@ TArray<TWeakObjectPtr<AActor>> APRBattleLevelManager::GetAliveEnemies() const
     return EnemyResult;
 }
 
+TArray<TWeakObjectPtr<AActor>> APRBattleLevelManager::GetAliveAlly() const
+{
+    TArray<TWeakObjectPtr<AActor>> AllyResult;
+    AllyResult.Reserve(Participants.Num());
+
+    for (const FParticipantState& P : Participants)
+    {
+        if (P.bAlive && P.bIsAlly && P.Actor.IsValid())
+        {
+            AllyResult.Add(P.Actor);
+        }
+    }
+
+    return AllyResult;
+}
+
 void APRBattleLevelManager::PhaseExecute()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Phase Execute"));
+    UE_LOG(LogTemp, Warning, TEXT("Enemy Execute Skill"));
+
     // 적 어빌리티 실행
 
-    // 실행 후 전투 결과 처리
-    StartPhase(EBattlePhase::EndTurn);
+    // TODO: 추후에 스킬 선택 알고리즘은 적 캐릭터 내부 구현, 현재는 Slot0, 첫번째 동료에게 지정 스킬만 사용
+    USkillData* SkillData = NewObject<USkillData>();
+    SkillData->InputType = (int32)EInputType::Slot0;
+    SkillData->TargetActors.Add(GetAliveAlly()[0].Get());
+
+    FGameplayEventData Data;
+    Data.EventTag = StartTurnTag;
+    Data.Instigator = this;
+    Data.Target = Participants[CurrentIndex].Actor.Get();
+    Data.OptionalObject = SkillData;
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Participants[CurrentIndex].Actor.Get(), StartTurnTag, Data);
 }
 
 void APRBattleLevelManager::PhaseEndTurn()
@@ -285,8 +308,6 @@ void APRBattleLevelManager::PhaseEndBattle()
             /*Message*/ ResultText
         );
     }
-
-    // Battle Manager에 전투 결과 전송
 
     // End battle 어빌리티 호출
     FGameplayEventData Data;

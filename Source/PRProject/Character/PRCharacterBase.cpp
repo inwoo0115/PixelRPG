@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Animation/PRAnimInstance.h"
+#include "Attributes/PRCombatAttributeSet.h"
 
 APRCharacterBase::APRCharacterBase()
 {
@@ -59,6 +60,12 @@ void APRCharacterBase::PossessedBy(AController* NewController)
 			FGameplayAbilitySpec StartSpec(StartInputAbility.Value);
 			StartSpec.InputID = (int32)(StartInputAbility.Key);
 			ASC->GiveAbility(StartSpec);
+		}
+
+		// Attribute ÃÊ±âÈ­
+		if (DefaultAttributesDT)
+		{
+			ASC->InitStats(UPRCombatAttributeSet::StaticClass(), DefaultAttributesDT);
 		}
 	}
 }

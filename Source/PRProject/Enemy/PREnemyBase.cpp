@@ -40,6 +40,12 @@ void APREnemyBase::BeginPlay()
 			StartSpec.InputID = (int32)(SkillAbility.Key);
 			ASC->GiveAbility(StartSpec);
 		}
+
+		// Attribute ÃÊ±âÈ­
+		if (DefaultAttributesDT)
+		{
+			ASC->InitStats(UPRCombatAttributeSet::StaticClass(), DefaultAttributesDT);
+		}
 	}
 
 	if (HPBarComp && HPBarComp->GetUserWidgetObject())

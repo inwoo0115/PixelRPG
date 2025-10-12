@@ -42,6 +42,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<class UPRCombatAttributeSet> CombatAttribute;
 
+	// Attribute Data
+	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	TObjectPtr<class UDataTable> DefaultAttributesDT;
+
 	// 임시 체력 바
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UWidgetComponent> HPBarComp;

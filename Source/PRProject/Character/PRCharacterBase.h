@@ -45,8 +45,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<class UAbilitySystemComponent> ASC;
 
-	UPROPERTY(EditAnywhere, Category = "GAS")
-	TArray<TSubclassOf<class UAttributeSet>> Attributes;
+	// Attribute Data
+	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	TObjectPtr<class UDataTable> DefaultAttributesDT;
 
 	// Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

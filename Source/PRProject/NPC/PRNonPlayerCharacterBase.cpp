@@ -6,6 +6,9 @@
 #include "Components/WidgetComponent.h"
 #include "Interface/PRInteractComponentInterface.h"
 #include "Character/Components/PRInteractionComponent.h"
+#include "Battle/PRBattleManager.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "Data/PRBattleDataAsset.h"
 
 APRNonPlayerCharacterBase::APRNonPlayerCharacterBase()
 {
@@ -36,13 +39,39 @@ void APRNonPlayerCharacterBase::Interact(AActor* InteractActor)
 {
 	if (bCanInteract)
 	{
-		// 여기에 로직 구현
+		// 전투 시작
+		APRBattleManager* BM = APRBattleManager::Get(GetWorld());
+		if (!BM)
+		{
+			return;
+		}
+
+		FGameplayEventData Data;
+		Data.EventTag = CreateBattleTag;
+		Data.Instigator = InteractActor;
+		Data.Target = BM;
+		Data.OptionalObject = BattleData;
+
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(BM, CreateBattleTag, Data);
 	}
 }
 
 void APRNonPlayerCharacterBase::CollisionEvent(AActor* InteractActor)
 {
-	// 충돌 시 이벤트 구현
+	// 전투 시작
+	APRBattleManager* BM = APRBattleManager::Get(GetWorld());
+	if (!BM)
+	{
+		return;
+	}
+
+	FGameplayEventData Data;
+	Data.EventTag = CreateBattleTag;
+	Data.Instigator = InteractActor;
+	Data.Target = BM;
+	Data.OptionalObject = BattleData;
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(BM, CreateBattleTag, Data);
 }
 
 void APRNonPlayerCharacterBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
