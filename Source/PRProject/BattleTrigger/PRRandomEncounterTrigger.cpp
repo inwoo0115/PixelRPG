@@ -5,6 +5,8 @@
 #include "Character/PRPlayerCharacter.h"
 #include "Battle/PRBattleRequest.h"
 #include "Battle/PRBattleManager.h"
+#include "Data/PRBattleDataAsset.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 APRRandomEncounterTrigger::APRRandomEncounterTrigger()
 {
@@ -97,7 +99,13 @@ void APRRandomEncounterTrigger::SendBattleRequest()
 {
 	if (APRBattleManager* BM = APRBattleManager::Get(GetWorld()))
 	{
-		// Ability tag·Î ¼Û½Å
+		FGameplayEventData Data;
+		Data.EventTag = CreateBattleTag;
+		Data.Instigator = this;
+		Data.Target = BM;
+		Data.OptionalObject = BattleData;
+
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(BM, CreateBattleTag, Data);
 	}
 }
 

@@ -22,7 +22,7 @@ struct FEnemyInfo
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Level;
+	int32 Level = 0;
 };
 
 
@@ -39,7 +39,7 @@ public:
 	FName BattleLevelName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 EnemyNumber;
+	int32 EnemyNumber = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FEnemyInfo> EnemyInfo;

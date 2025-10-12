@@ -134,4 +134,11 @@ protected:
 
 	// SingleTon
 	static APRBattleLevelManager* Singleton;
+
+	// HP 상태 델리게이트
+	TMap<TWeakObjectPtr<class UAbilitySystemComponent>, FDelegateHandle> HealthHandles;
+	void BindHealthDelegate(AActor* Actor);
+	void UnbindHealthDelegate(UAbilitySystemComponent* ASC);
+	void SetAliveForActor(AActor* Actor, bool bAliveNew);
+	int32 FindParticipantIndex(AActor* Actor) const;
 };

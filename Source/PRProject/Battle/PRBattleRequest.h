@@ -16,8 +16,8 @@ struct FBattleRequest
     FName EnemyGroupRowName;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float EnemyNumber;
+    float EnemyNumber = 0.0f;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float LevelOffset;
+    float LevelOffset = 0.0f;
 };

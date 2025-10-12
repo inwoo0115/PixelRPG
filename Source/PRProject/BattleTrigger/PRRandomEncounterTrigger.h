@@ -61,4 +61,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Encounter")
 	float MaxEncounterChance = 30.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataAsset")
+	TObjectPtr<class UPRBattleDataAsset> BattleData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tag")
+	FGameplayTag CreateBattleTag;
 };

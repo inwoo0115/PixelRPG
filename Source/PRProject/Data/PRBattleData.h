@@ -13,7 +13,7 @@ struct FBattleData : public FTableRowBase
 	FName BattleLevelName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 EnemyNumber;
+	int32 EnemyNumber = 0;
 
 	// 배열 순서대로 배치됨
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

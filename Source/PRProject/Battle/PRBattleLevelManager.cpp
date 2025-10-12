@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Character/PRCharacterBase.h"
+#include "AbilitySystemComponent.h"
+#include "Attributes/PRCombatAttributeSet.h"
 
 APRBattleLevelManager* APRBattleLevelManager::Singleton = nullptr;
 
@@ -90,6 +92,8 @@ void APRBattleLevelManager::GatherAliveParticipant()
         {
             S.bIsAlly = true;
         }
+
+        BindHealthDelegate(A);
 
 		Index++;
         Participants.Add(S);
@@ -184,6 +188,7 @@ void APRBattleLevelManager::PhaseAwaitCommand()
     UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Participants[CurrentIndex].Actor.Get(), StartTurnTag, Data);
 
     // 카메라 현재 턴 플레이어 고정
+
 }
 
 void APRBattleLevelManager::OnExecuteCommand()
@@ -252,10 +257,35 @@ void APRBattleLevelManager::PhaseEndTurn()
 void APRBattleLevelManager::PhaseEndBattle()
 {
     UE_LOG(LogTemp, Warning, TEXT("End Battle"));
-    // 결과 처리
 
-    // 결과 컷씬 재생
-    
+    // 임시: 결과 텍스트 표시
+    FString ResultText;
+
+    switch (Result)
+    {
+        case EBattleResult::Victory:
+            ResultText = TEXT("Victory");
+            break;
+        case EBattleResult::Defeat:
+            ResultText = TEXT("Defeat");
+            break;
+        case EBattleResult::Runaway:
+            ResultText = TEXT("Runaway");
+            break;
+        default:
+            ResultText = TEXT("None");
+    }
+
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(
+            /*Key*/ -1,
+            /*Time*/ 2.0f,
+            /*Color*/ FColor(0, 200, 255),
+            /*Message*/ ResultText
+        );
+    }
+
     // Battle Manager에 전투 결과 전송
 
     // End battle 어빌리티 호출
@@ -289,6 +319,81 @@ bool APRBattleLevelManager::CheckBattleResult()
             return false;
     }
 
+    if (!bAnyAllyAlive)
+    {
+        Result = EBattleResult::Defeat;
+    }
+    else if (!bAnyEnemyAlive)
+    {
+        Result = EBattleResult::Victory;
+    }
+
     return (!bAnyAllyAlive || !bAnyEnemyAlive);
+}
+
+void APRBattleLevelManager::BindHealthDelegate(AActor* Actor)
+{
+    IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(Actor);
+    
+    if (!ASI) return;
+
+    UAbilitySystemComponent* ASC = ASI->GetAbilitySystemComponent();
+
+    // 기존 바인딩 있으면 해제
+    UnbindHealthDelegate(ASC);
+
+    TWeakObjectPtr<AActor> WeakActor = Actor;
+
+    // Health 변경에 반응 → bAlive 갱신
+    const FGameplayAttribute HealthAttr = UPRCombatAttributeSet::GetHealthAttribute();
+    FDelegateHandle Handle = ASC->GetGameplayAttributeValueChangeDelegate(HealthAttr)
+        .AddLambda([this, WeakActor](const FOnAttributeChangeData& Data)
+            {
+                AActor* A = WeakActor.Get();
+                if (!A) return;
+
+                const bool bAliveNew = (Data.NewValue > 0.f);
+                SetAliveForActor(A, bAliveNew);
+            });
+
+    HealthHandles.Add(ASC, Handle);
+}
+
+void APRBattleLevelManager::UnbindHealthDelegate(UAbilitySystemComponent* ASC)
+{
+    if (!ASC) return;
+    if (FDelegateHandle* Handle = HealthHandles.Find(ASC))
+    {
+        if (Handle->IsValid())
+        {
+            ASC->GetGameplayAttributeValueChangeDelegate(UPRCombatAttributeSet::GetHealthAttribute())
+                .Remove(*Handle);
+        }
+        HealthHandles.Remove(ASC);
+    }
+}
+
+void APRBattleLevelManager::SetAliveForActor(AActor* Actor, bool bAliveNew)
+{
+    const int32 Idx = FindParticipantIndex(Actor);
+    if (Idx == INDEX_NONE) return;
+
+    FParticipantState& P = Participants[Idx];
+    if (P.bAlive != bAliveNew)
+    {
+        P.bAlive = bAliveNew;
+    }
+}
+
+int32 APRBattleLevelManager::FindParticipantIndex(AActor* Actor) const
+{
+    for (int32 i = 0; i < Participants.Num(); ++i)
+    {
+        if (Participants[i].Actor.Get() == Actor)
+        {
+            return i;
+        }
+    }
+    return INDEX_NONE;
 }
 

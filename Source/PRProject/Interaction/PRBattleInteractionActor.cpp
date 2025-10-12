@@ -22,5 +22,5 @@ void APRBattleInteractionActor::Interact(AActor* InteractActor)
 	Data.Target = BM;
 	Data.OptionalObject = BattleData;
 
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(BM, CreateBattleTag, Data);;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(BM, CreateBattleTag, Data);
 }
