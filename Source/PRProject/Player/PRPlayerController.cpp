@@ -8,8 +8,8 @@ void APRPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ASC Debug TODO: 나중에 지우기
-	ConsoleCommand(TEXT("showdebug abilitysystem"));
+	// ASC Debug
+	// ConsoleCommand(TEXT("showdebug abilitysystem"));
 }
 
 void APRPlayerController::StartBattleUIMode()
