@@ -40,5 +40,9 @@ protected:
 	TObjectPtr<class UAbilitySystemComponent> ASC;
 
 	UPROPERTY(EditAnywhere, Category = "GAS")
-	TArray<TSubclassOf<class UAttributeSet>> Attributes;
+	TObjectPtr<class UPRCombatAttributeSet> CombatAttribute;
+
+	// 임시 체력 바
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<class UWidgetComponent> HPBarComp;
 };

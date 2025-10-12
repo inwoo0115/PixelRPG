@@ -20,6 +20,8 @@ class PRPROJECT_API APRPlayerCharacter : public APRCharacterBase, public IPRInte
 public:
 	APRPlayerCharacter();
 
+	void BeginPlay() override;
+
 	// Input Action Functions
 	void Move(const FInputActionValue& Value);
 
@@ -56,4 +58,8 @@ protected:
 	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
 	TObjectPtr<class UPRInteractionComponent> InteractionComponent;
+
+	// 임시 체력 바
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<class UWidgetComponent> HPBarComp;
 };

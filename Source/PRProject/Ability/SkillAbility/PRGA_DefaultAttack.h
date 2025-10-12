@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Ability/SkillAbility/PRGA_SkillAbilityBase.h"
+#include "GameplayTagContainer.h"
 #include "PRGA_DefaultAttack.generated.h"
 
 /**
@@ -30,4 +31,7 @@ protected:
 
 	UFUNCTION()
 	void OnSkillMontageInterrupted();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tag")
+	FGameplayTag CueTag;
 };

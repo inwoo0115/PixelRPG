@@ -7,6 +7,7 @@
 #include "Ability/Task/PRAT_PlaySequenceAndWait.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 
 UPRGA_DefaultAttack::UPRGA_DefaultAttack()
@@ -68,16 +69,26 @@ void UPRGA_DefaultAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 	for (auto Target : CurrentTargets)
 	{
-		IAbilitySystemInterface* ASI = Cast< IAbilitySystemInterface>(Target.Get());
+		IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(Target.Get());
 		if (ASI)
 		{
+			// Attribute Effect
 			UAbilitySystemComponent* TargetASC = ASI->GetAbilitySystemComponent();
+			if (!TargetASC)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Unvalid Target ASC"));
+				continue;
+			}
 			FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass);
-
 			if (EffectSpecHandle.IsValid())
 			{ 
+				UE_LOG(LogTemp, Warning, TEXT("Apply Damage To Target"));
+
 				SourceASC->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), TargetASC);
 			}
+
+			// Game play Cue
+			TargetASC->ExecuteGameplayCue(CueTag);
 		}
 	}
 }

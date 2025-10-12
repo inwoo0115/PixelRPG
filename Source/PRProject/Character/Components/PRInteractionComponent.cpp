@@ -42,7 +42,10 @@ void UPRInteractionComponent::Interact()
 	if (SelectedActor && SelectedActor->Implements<UPRInteractableInterface>())
 	{
 		IPRInteractableInterface* InteractActor = Cast<IPRInteractableInterface>(SelectedActor);
-		InteractActor->Interact(Owner);
+		if (InteractActor)
+		{
+			InteractActor->Interact(Owner);
+		}
 	}
 }
 

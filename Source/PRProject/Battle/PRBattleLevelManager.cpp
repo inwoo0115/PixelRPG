@@ -219,7 +219,7 @@ TArray<TWeakObjectPtr<AActor>> APRBattleLevelManager::GetAliveEnemies() const
 void APRBattleLevelManager::PhaseExecute()
 {
     UE_LOG(LogTemp, Warning, TEXT("Phase Execute"));
-    // 어빌리티 실행
+    // 적 어빌리티 실행
 
     // 실행 후 전투 결과 처리
     StartPhase(EBattlePhase::EndTurn);

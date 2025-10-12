@@ -5,11 +5,18 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayAbilitySpec.h"
 #include "Attributes/PRCombatAttributeSet.h"
+#include "UI/PRHPBarWidget.h"
+#include "Components/WidgetComponent.h"
 
 
 APREnemyBase::APREnemyBase()
 {
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
+
+	CombatAttribute = CreateDefaultSubobject<UPRCombatAttributeSet>(TEXT("CombatAttribute"));
+
+	HPBarComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBar"));
+	HPBarComp->SetupAttachment(RootComponent);
 }
 
 void APREnemyBase::BeginPlay()
@@ -34,11 +41,19 @@ void APREnemyBase::BeginPlay()
 			ASC->GiveAbility(StartSpec);
 		}
 	}
+
+	if (HPBarComp && HPBarComp->GetUserWidgetObject())
+	{
+		if (auto* HPW = Cast<UPRHPBarWidget>(HPBarComp->GetUserWidgetObject()))
+		{
+			HPW->InitFromASC(ASC);
+		}
+	}
 }
 
 UAbilitySystemComponent* APREnemyBase::GetAbilitySystemComponent() const
 {
-	return nullptr;
+	return ASC;
 }
 
 float APREnemyBase::GetSpeed()

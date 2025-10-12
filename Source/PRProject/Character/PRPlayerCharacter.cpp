@@ -12,10 +12,30 @@
 #include "InputAction.h"
 #include "Attributes/PRCombatAttributeSet.h"
 
+#include "UI/PRHPBarWidget.h"
+#include "Components/WidgetComponent.h"
+
 APRPlayerCharacter::APRPlayerCharacter()
 {
 	// Interaction
 	InteractionComponent = CreateDefaultSubobject<UPRInteractionComponent>(TEXT("Interact"));
+
+	HPBarComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBar"));
+	HPBarComp->SetupAttachment(RootComponent);
+
+}
+
+void APRPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (HPBarComp && HPBarComp->GetUserWidgetObject())
+	{
+		if (auto* HPW = Cast<UPRHPBarWidget>(HPBarComp->GetUserWidgetObject()))
+		{
+			HPW->InitFromASC(ASC);
+		}
+	}
 }
 
 void APRPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

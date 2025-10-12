@@ -2,6 +2,7 @@
 
 
 #include "Attributes/PRCombatAttributeSet.h"
+#include "GameplayEffectExtension.h"
 
 UPRCombatAttributeSet::UPRCombatAttributeSet() :
 	Health(100.0f),
@@ -22,6 +23,28 @@ bool UPRCombatAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackD
 void UPRCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+
+	float MinimumHealth = 0.0f;
+
+	const float OldHealth = GetHealth();
+	const float OldDamage = GetDamage();
+	const float MaxHP = GetMaxHealth();
+
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+
+		SetHealth(FMath::Clamp(GetHealth(), MinimumHealth, GetMaxHealth()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetDamageAttribute())
+	{
+
+
+		SetHealth(FMath::Clamp(GetHealth() - GetDamage(), MinimumHealth, GetMaxHealth()));
+		SetDamage(0.0f);
+
+		UE_LOG(LogTemp, Warning, TEXT("[POST Damage] HP %.1f -> %.1f (¥Ä=%.1f), Damage=%.1f, Max=%.1f"),
+			OldHealth, GetHealth(), GetHealth() - OldHealth, OldDamage, MaxHP);
+	}
 }
 
 void UPRCombatAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
@@ -41,6 +64,11 @@ void UPRCombatAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribu
 	if (Attribute == GetHealthAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
+	}
+
+	if (Attribute == GetDamageAttribute())
+	{
+		NewValue = NewValue < 0.0f ? 0.0f : NewValue;
 	}
 }
 
