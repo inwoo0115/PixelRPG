@@ -16,7 +16,7 @@ APRNonPlayerCharacterBase::APRNonPlayerCharacterBase()
 
 	// 박스 컴포넌트 설정
 	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
-	RootComponent = InteractionBox;
+	InteractionBox->SetupAttachment(RootComponent);;
 	InteractionBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));
 	InteractionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	InteractionBox->SetCollisionResponseToAllChannels(ECR_Ignore);

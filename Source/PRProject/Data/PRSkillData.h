@@ -17,4 +17,7 @@ public:
 
 	UPROPERTY()
 	int32 InputType;
+
+	// 기타 스킬 정보 추가
+	// ...
 };
