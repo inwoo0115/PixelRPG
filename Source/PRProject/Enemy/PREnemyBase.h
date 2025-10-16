@@ -28,6 +28,8 @@ public:
 	virtual float GetSpeed() override;
 	virtual bool  IsAlive() override;
 
+	virtual void InitByEnemyInfo(struct FEnemyInfo Info);
+
 protected:
 	// GAS
 	UPROPERTY(EditAnywhere, Category = "GAS")

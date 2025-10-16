@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Character/PRPlayerInputType.h"
 #include "PRBattleDataAsset.generated.h"
 
 USTRUCT(BlueprintType)
@@ -23,6 +24,9 @@ struct FEnemyInfo
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Level = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EInputType, TSubclassOf<class UGameplayAbility>> SkillAbilities;
 };
 
 

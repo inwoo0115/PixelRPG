@@ -7,6 +7,7 @@
 #include "Attributes/PRCombatAttributeSet.h"
 #include "UI/PRHPBarWidget.h"
 #include "Components/WidgetComponent.h"
+#include "Data/PRBattleDataAsset.h"
 
 
 APREnemyBase::APREnemyBase()
@@ -82,4 +83,25 @@ bool APREnemyBase::IsAlive()
 	}
 
 	return true;
+}
+
+void APREnemyBase::InitByEnemyInfo(FEnemyInfo Info)
+{
+	if (ASC)
+	{
+		// Ability µî·Ï
+		if (Info.SkillAbilities.IsEmpty())
+		{
+			return;
+		}
+
+		SkillAbilities = Info.SkillAbilities;
+
+		for (const auto& SkillAbility : SkillAbilities)
+		{
+			FGameplayAbilitySpec StartSpec(SkillAbility.Value);
+			StartSpec.InputID = (int32)(SkillAbility.Key);
+			ASC->GiveAbility(StartSpec);
+		}
+	}
 }

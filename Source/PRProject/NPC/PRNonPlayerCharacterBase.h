@@ -52,6 +52,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
 	bool bHasCollisionEvent = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
+	bool bBattleEventFinished = false;
+
 protected:
 	// Battle Data
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataAsset")

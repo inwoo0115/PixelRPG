@@ -33,6 +33,12 @@ APRNonPlayerCharacterBase::APRNonPlayerCharacterBase()
 void APRNonPlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (InteractionBox)
+	{
+		InteractionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &APRNonPlayerCharacterBase::OnBoxBeginOverlap);
+		InteractionBox->OnComponentEndOverlap.AddUniqueDynamic(this, &APRNonPlayerCharacterBase::OnBoxEndOverlap);
+	}
 }
 
 void APRNonPlayerCharacterBase::Interact(AActor* InteractActor)
@@ -71,16 +77,21 @@ void APRNonPlayerCharacterBase::CollisionEvent(AActor* InteractActor)
 	Data.Target = BM;
 	Data.OptionalObject = BattleData;
 
+	bBattleEventFinished = true;
+
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(BM, CreateBattleTag, Data);
 }
 
 void APRNonPlayerCharacterBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// 충돌 시 이벤트가 있을 경우 우선 호출
-	if (bHasCollisionEvent && bCanCollisionEvent)
+	if (bHasCollisionEvent && bCanCollisionEvent &&!bBattleEventFinished)
 	{
-		CollisionEvent(OtherActor);
-		bCanCollisionEvent = false;
+		if (OtherActor->Implements<UPRInteractComponentInterface>())
+		{
+			CollisionEvent(OtherActor);
+			bCanCollisionEvent = false;
+		}
 		return;
 	}
 

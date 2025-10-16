@@ -11,6 +11,7 @@
 #include "PaperZDCharacter.h"
 #include "Battle/PRBattleLevelManager.h"
 #include "Character/PRCharacterBase.h"
+#include "Enemy/PREnemyBase.h"
 
 UPRAT_CreateBattleAndWait* UPRAT_CreateBattleAndWait::CreateBattleLevelProxy(
 	UGameplayAbility* OwningAbility,
@@ -141,9 +142,6 @@ void UPRAT_CreateBattleAndWait::OnLevelLoaded()
 		Field->SetShouldBeVisible(false);
 	}
 
-	// 임시로 캐릭터 위치 설정
-	SetPlayerOnBattleLevel();
-
 	// Enemy 스폰
 	FActorSpawnParameters Params;
 	Params.OverrideLevel = StreamRef->GetLoadedLevel();
@@ -153,11 +151,16 @@ void UPRAT_CreateBattleAndWait::OnLevelLoaded()
 	{
 		if (!Info.EnemyClass) continue;
 
-		APaperZDCharacter* Enemy = StreamRef->GetWorld()->SpawnActor<APaperZDCharacter>(
+		APREnemyBase* Enemy = StreamRef->GetWorld()->SpawnActor<APREnemyBase>(
 			Info.EnemyClass,
 			Info.SpawnLocation,
 			Info.SpawnRotation,
 			Params);
+		if (Enemy)
+		{
+			// 어빌리티 세팅
+			Enemy->InitByEnemyInfo(Info);
+		}
 	}
 
 	// 카메라 전환
@@ -203,6 +206,9 @@ void UPRAT_CreateBattleAndWait::OnLevelLoaded()
 		}
 		
 	}
+
+	// 임시로 캐릭터 위치 설정
+	SetPlayerOnBattleLevel();
 
 	// 레벨 호출 후 외부 로직 바인딩
 	if (ShouldBroadcastAbilityTaskDelegates())
