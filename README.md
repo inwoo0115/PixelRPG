@@ -46,8 +46,6 @@ PaperZD를 활용한 2D 스프라이트 캐릭터, GAS(Gameplay Ability System) 
 | **입력** | **Enhanced Input** |
 | **UI** | UMG |
 | **데이터** | DataTable, DataAsset, 구조체 기반 |
-| **렌더링** | DirectX 12 (SM6), Nanite 활성화 |
-| **PCG** | Procedural Content Generation 플러그인 |
 
 ---
 
